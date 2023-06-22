@@ -1,0 +1,1 @@
+Sat Jun 17 2023 0:7:37 [PH] error: 🔥 GlobalErrorHandler =>  E11000 duplicate key error collection: goru-kena-becha.cows index: phoneNumber_1 dup key: { phoneNumber: null }
