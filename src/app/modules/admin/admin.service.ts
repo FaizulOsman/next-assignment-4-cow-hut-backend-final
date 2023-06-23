@@ -1,6 +1,11 @@
 import httpStatus from "http-status";
 import ApiError from "../../../errors/ApiError";
-import { IAdmin, ILoginAdmin, ILoginAdminResponse } from "./admin.interface";
+import {
+  IAdmin,
+  ILoginAdmin,
+  ILoginAdminResponse,
+  IRefreshTokenResponse,
+} from "./admin.interface";
 import { Admin } from "./admin.model";
 import { jwtHelpers } from "../../../helpers/jwtHelpers";
 import config from "../../../config";
@@ -62,7 +67,47 @@ const loginAdmin = async (
   };
 };
 
+const refreshToken = async (token: string): Promise<IRefreshTokenResponse> => {
+  // verify token
+  // invalid token - synchronous
+  let verifiedToken = null;
+  try {
+    verifiedToken = jwtHelpers.verifyToken(
+      token,
+      config.jwt.refresh_secret as Secret
+    );
+  } catch (err) {
+    throw new ApiError(httpStatus.FORBIDDEN, "Invalid Refresh Token");
+  }
+
+  const { phone } = verifiedToken;
+
+  // If you deleted from database But your refresh token is exist
+  // checking deleted admin's refresh token
+
+  const isAdminExist = await Admin.isAdminExist(phone);
+
+  if (!isAdminExist) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Admin does not exist");
+  }
+
+  //generate new token
+  const newAccessToken = jwtHelpers.createToken(
+    {
+      phoneNumber: isAdminExist.phoneNumber,
+      password: isAdminExist.password,
+    },
+    config.jwt.secret as Secret,
+    config.jwt.expires_in as string
+  );
+
+  return {
+    accessToken: newAccessToken,
+  };
+};
+
 export const AdminService = {
   createAdmin,
   loginAdmin,
+  refreshToken,
 };

@@ -3,10 +3,11 @@ import { AdminService } from "./admin.service";
 import catchAsync from "../../../shared/catchAsync";
 import sendResponse from "../../../shared/sendResponse";
 import httpStatus from "http-status";
-import { IAdmin, ILoginAdminResponse } from "./admin.interface";
-import pick from "../../../shared/pick";
-import { paginationFields } from "../../../constants/pagination";
-import { userFilterableFields } from "../user/user.constants";
+import {
+  IAdmin,
+  ILoginAdminResponse,
+  IRefreshTokenResponse,
+} from "./admin.interface";
 import config from "../../../config";
 
 // Create Admin
@@ -49,7 +50,29 @@ const loginAdmin = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const refreshToken = catchAsync(async (req: Request, res: Response) => {
+  const { refreshToken } = req.cookies;
+  const result = await AdminService.refreshToken(refreshToken);
+
+  // set refresh token into cookie
+
+  const cookieOptions = {
+    secure: config.env === "production",
+    httpOnly: true,
+  };
+
+  res.cookie("refreshToken", refreshToken, cookieOptions);
+
+  sendResponse<IRefreshTokenResponse>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Admin logged in successfully !",
+    data: result,
+  });
+});
+
 export const AdminController = {
   createAdmin,
   loginAdmin,
+  refreshToken,
 };

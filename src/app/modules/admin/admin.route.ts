@@ -15,15 +15,10 @@ router.post(
   AdminController.loginAdmin
 );
 
-// router.get('/', AdminController.getAllAdmins);
-// router.get('/:id', AdminController.getSingleAdmin);
-
-// router.delete('/:id', AdminController.deleteAdmin);
-
-// router.patch(
-//   '/:id',
-//   validateRequest(AdminValidation.updateAdminZodSchema),
-//   AdminController.updateAdmin
-// );
+router.post(
+  "/refresh-token",
+  validateRequest(AdminValidation.refreshTokenZodSchema),
+  AdminController.refreshToken
+);
 
 export const AdminRoutes = router;

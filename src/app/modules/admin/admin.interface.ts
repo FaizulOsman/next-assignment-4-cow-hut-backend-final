@@ -23,6 +23,10 @@ export type ILoginAdminResponse = {
   refreshToken?: string;
 };
 
+export type IRefreshTokenResponse = {
+  accessToken: string;
+};
+
 // Admin Model (Static)
 export type AdminModel = {
   isAdminExist(
