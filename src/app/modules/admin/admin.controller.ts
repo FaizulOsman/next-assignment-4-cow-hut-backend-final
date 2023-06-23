@@ -15,14 +15,15 @@ const createAdmin: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
     const { ...adminData } = req.body;
 
-    const result = await AdminService.createAdmin(adminData);
-
+    const result: any = await AdminService.createAdmin(adminData);
+    result.set("password", undefined, { strict: false });
+    const test = await result;
     // Send Response
     sendResponse<IAdmin>(res, {
       statusCode: httpStatus.OK,
       success: true,
       message: "Admin Created Successfully",
-      data: result,
+      data: test,
     });
   }
 );
