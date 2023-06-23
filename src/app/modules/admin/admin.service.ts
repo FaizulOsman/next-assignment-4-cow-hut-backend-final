@@ -26,6 +26,9 @@ const loginAdmin = async (
 ): Promise<ILoginAdminResponse> => {
   const { phoneNumber, password } = payload;
 
+  const adminAllData: any = await Admin.findOne({ phoneNumber });
+  const { _id, role } = adminAllData;
+
   const isAdminExist = await Admin.isAdminExist(phoneNumber);
 
   if (!isAdminExist) {
@@ -39,17 +42,16 @@ const loginAdmin = async (
     throw new ApiError(httpStatus.UNAUTHORIZED, "Password is incorrect");
   }
 
-  //create access token & refresh token
-
+  // create access token
   const { phoneNumber: phone, password: pass } = isAdminExist;
   const accessToken = jwtHelpers.createToken(
-    { phone, pass },
+    { phone, pass, _id, role },
     config.jwt.secret as Secret,
     config.jwt.expires_in as string
   );
-
+  // create refresh token
   const refreshToken = jwtHelpers.createToken(
-    { phone, pass },
+    { phone, pass, _id, role },
     config.jwt.refresh_secret as Secret,
     config.jwt.refresh_expires_in as string
   );
