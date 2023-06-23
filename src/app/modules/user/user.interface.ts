@@ -15,8 +15,19 @@ export type IUser = {
   income: number;
 };
 
+// User Model (Static)
+export type UserModel = {
+  isUserExist(
+    phoneNumber: string
+  ): Promise<Pick<IUser, "phoneNumber" | "password">>;
+  isPasswordMatched(
+    givenPassword: string,
+    savedPassword: string
+  ): Promise<boolean>;
+} & Model<IUser>;
+
 // User Model
-export type UserModel = Model<IUser, Record<string, unknown>>;
+// export type UserModel = Model<IUser, Record<string, unknown>>;
 
 export type IUserFilters = {
   searchTerm?: string;
