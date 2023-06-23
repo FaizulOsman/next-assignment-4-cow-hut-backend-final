@@ -5,7 +5,7 @@ import bcrypt from "bcrypt";
 // Admin Schema
 export const AdminSchema = new Schema<IAdmin>(
   {
-    password: { type: String, required: true },
+    password: { type: String, required: true, select: 0 },
     role: { type: String, enum: ["admin"], required: true },
     name: {
       type: {
@@ -31,6 +31,19 @@ export const AdminSchema = new Schema<IAdmin>(
     },
   }
 );
+
+AdminSchema.statics.isAdminExist = async function (
+  phoneNumber: string
+): Promise<Pick<IAdmin, "phoneNumber" | "password"> | null> {
+  return await Admin.findOne({ phoneNumber }, { phoneNumber: 1, password: 1 });
+};
+
+AdminSchema.statics.isPasswordMatched = async function (
+  givenPassword: string,
+  savedPassword: string
+): Promise<boolean> {
+  return await bcrypt.compare(givenPassword, savedPassword);
+};
 
 AdminSchema.pre("save", async function (next) {
   // Hashing Password

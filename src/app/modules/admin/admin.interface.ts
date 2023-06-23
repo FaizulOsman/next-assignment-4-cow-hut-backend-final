@@ -13,7 +13,28 @@ export type IAdmin = {
   address: string;
 };
 
-export type AdminModel = Model<IAdmin, Record<string, unknown>>;
+export type ILoginAdmin = {
+  phoneNumber: string;
+  password: string;
+};
+
+export type ILoginAdminResponse = {
+  accessToken: string;
+  refreshToken?: string;
+};
+
+// Admin Model (Static)
+export type AdminModel = {
+  isAdminExist(
+    phoneNumber: string
+  ): Promise<Pick<IAdmin, "phoneNumber" | "password">>;
+  isPasswordMatched(
+    givenPassword: string,
+    savedPassword: string
+  ): Promise<boolean>;
+} & Model<IAdmin>;
+
+// export type AdminModel = Model<IAdmin, Record<string, unknown>>;
 
 export type IAdminFilters = {
   searchTerm?: string;
