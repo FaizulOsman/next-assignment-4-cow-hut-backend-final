@@ -12,10 +12,11 @@ router.get("/:id", auth(ENUM_USER_ROLE.ADMIN), UserController.getSingleUser);
 router.patch(
   "/:id",
   validateRequest(UserValidation.updateUserZodSchema),
+  auth(ENUM_USER_ROLE.ADMIN),
   UserController.updateUser
 );
 
-router.delete("/:id", UserController.deleteUser);
+router.delete("/:id", auth(ENUM_USER_ROLE.ADMIN), UserController.deleteUser);
 
 router.get("/", auth(ENUM_USER_ROLE.ADMIN), UserController.getAllUsers);
 
