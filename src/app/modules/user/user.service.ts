@@ -102,9 +102,30 @@ const deleteUser = async (id: string): Promise<IUser | null> => {
   return result;
 };
 
+// Get My Profile
+const getMyProfile = async (
+  verifiedUser: any
+): Promise<IUser[] | null | any> => {
+  let result = null;
+
+  if (verifiedUser) {
+    result = await User.find(
+      { _id: verifiedUser._id },
+      { name: 1, phoneNumber: 1, address: 1 }
+    );
+
+    if (!result.length) {
+      throw new ApiError(httpStatus.NOT_FOUND, "No data found!");
+    }
+  }
+
+  return result;
+};
+
 export const UserService = {
   getAllUsers,
   getSingleUser,
   updateUser,
   deleteUser,
+  getMyProfile,
 };

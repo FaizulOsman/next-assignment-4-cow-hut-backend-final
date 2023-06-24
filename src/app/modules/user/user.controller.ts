@@ -7,6 +7,9 @@ import { IUser } from "./user.interface";
 import pick from "../../../shared/pick";
 import { userFilterableFields } from "./user.constants";
 import { paginationFields } from "../../../constants/pagination";
+import { jwtHelpers } from "../../../helpers/jwtHelpers";
+import config from "../../../config";
+import { Secret } from "jsonwebtoken";
 
 // Get all users
 const getAllUsers: RequestHandler = catchAsync(
@@ -71,9 +74,31 @@ const deleteUser: RequestHandler = catchAsync(async (req, res) => {
   });
 });
 
+// Get My Profile
+const getMyProfile: RequestHandler = catchAsync(
+  async (req: Request, res: Response) => {
+    const token: any = req.headers.authorization;
+    const verifiedUser = jwtHelpers.verifyToken(
+      token,
+      config.jwt.secret as Secret
+    );
+
+    const result = await UserService.getMyProfile(verifiedUser);
+
+    // Send Response
+    sendResponse<IUser>(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "User's information retrieved successfully",
+      data: result,
+    });
+  }
+);
+
 export const UserController = {
   getAllUsers,
   getSingleUser,
   updateUser,
   deleteUser,
+  getMyProfile,
 };
