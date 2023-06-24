@@ -111,7 +111,7 @@ const updateMyProfile: RequestHandler = catchAsync(
     sendResponse<IUser>(res, {
       statusCode: httpStatus.OK,
       success: true,
-      message: "User updated successfully",
+      message: "User's information retrieved successfully",
       data: result,
     });
   }
