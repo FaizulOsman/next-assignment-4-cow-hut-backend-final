@@ -8,6 +8,9 @@ const router = express.Router();
 
 // Routes
 router.get("/my-profile", UserController.getMyProfile);
+
+router.patch("/my-profile", UserController.updateMyProfile);
+
 router.get("/:id", auth(ENUM_USER_ROLE.ADMIN), UserController.getSingleUser);
 
 router.patch(

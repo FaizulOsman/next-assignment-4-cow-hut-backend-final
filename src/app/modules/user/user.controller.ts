@@ -95,10 +95,33 @@ const getMyProfile: RequestHandler = catchAsync(
   }
 );
 
+// Update My Profile
+const updateMyProfile: RequestHandler = catchAsync(
+  async (req: Request, res: Response) => {
+    const token: any = req.headers.authorization;
+    const verifiedUser = jwtHelpers.verifyToken(
+      token,
+      config.jwt.secret as Secret
+    );
+
+    const updateData = req.body;
+
+    const result = await UserService.updateMyProfile(verifiedUser, updateData);
+
+    sendResponse<IUser>(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "User updated successfully",
+      data: result,
+    });
+  }
+);
+
 export const UserController = {
   getAllUsers,
   getSingleUser,
   updateUser,
   deleteUser,
   getMyProfile,
+  updateMyProfile,
 };
