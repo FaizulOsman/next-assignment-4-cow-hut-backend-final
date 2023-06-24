@@ -4,6 +4,9 @@ import catchAsync from "../../../shared/catchAsync";
 import sendResponse from "../../../shared/sendResponse";
 import httpStatus from "http-status";
 import { IOrder } from "./order.interface";
+import { jwtHelpers } from "../../../helpers/jwtHelpers";
+import config from "../../../config";
+import { Secret } from "jsonwebtoken";
 
 // Create Order
 const createOrder: RequestHandler = catchAsync(
@@ -24,7 +27,13 @@ const createOrder: RequestHandler = catchAsync(
 
 const getAllOrders: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
-    const result = await OrderService.getAllOrders();
+    const token: any = req.headers.authorization;
+    const verifiedUser = jwtHelpers.verifyToken(
+      token,
+      config.jwt.secret as Secret
+    );
+
+    const result = await OrderService.getAllOrders(verifiedUser);
 
     // Send Response
     sendResponse<IOrder>(res, {

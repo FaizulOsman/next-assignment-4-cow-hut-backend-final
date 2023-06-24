@@ -94,11 +94,30 @@ const createOrder = async (payload: IOrder): Promise<IOrder | null> => {
   return orderData;
 };
 
-const getAllOrders = async (): Promise<IOrder[] | null | any> => {
-  const result = await Order.find({})
-    .populate("seller")
-    .populate("buyer")
-    .populate("cow");
+const getAllOrders = async (
+  verifiedUser: any
+): Promise<IOrder[] | null | any> => {
+  let result = null;
+
+  if (verifiedUser.role === "admin") {
+    result = await Order.find({})
+      .populate("seller")
+      .populate("buyer")
+      .populate("cow");
+  }
+
+  if (verifiedUser.role === "buyer" || verifiedUser.role === "seller") {
+    result = await Order.find({
+      $or: [{ buyer: verifiedUser._id }, { seller: verifiedUser._id }],
+    })
+      .populate("seller")
+      .populate("buyer")
+      .populate("cow");
+
+    if (!result.length) {
+      throw new ApiError(httpStatus.NOT_FOUND, "No orders found!");
+    }
+  }
 
   return result;
 };
