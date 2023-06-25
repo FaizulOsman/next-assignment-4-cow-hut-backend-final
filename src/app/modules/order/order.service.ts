@@ -122,7 +122,42 @@ const getAllOrders = async (
   return result;
 };
 
+// Get Single Order
+const getSingleOrder = async (
+  id: any,
+  verifiedUser: any
+): Promise<IOrder[] | null | any> => {
+  let result = null;
+
+  if (verifiedUser?.role === "admin") {
+    // Getting Specific Order by Admin
+    result = await Order.findOne({ _id: id })
+      .populate("buyer")
+      .populate("seller");
+    console.log("Admin", verifiedUser._id);
+  }
+
+  if (verifiedUser?.role === "seller" || verifiedUser?.role === "buyer") {
+    // Getting Specific Order by Seller/Buyer
+    result = await Order.findOne({
+      $and: [
+        { _id: id },
+        { $or: [{ buyer: verifiedUser?._id }, { seller: verifiedUser?._id }] },
+      ],
+    })
+      .populate("buyer")
+      .populate("seller");
+
+    if (!result) {
+      throw new ApiError(httpStatus.NOT_FOUND, "You are not authorized!");
+    }
+  }
+
+  return result;
+};
+
 export const OrderService = {
   createOrder,
   getAllOrders,
+  getSingleOrder,
 };

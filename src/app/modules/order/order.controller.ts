@@ -45,7 +45,31 @@ const getAllOrders: RequestHandler = catchAsync(
   }
 );
 
+// Get Single Order
+const getSingleOrder: RequestHandler = catchAsync(
+  async (req: Request, res: Response) => {
+    const id = req.params.id;
+
+    const token: any = req.headers.authorization;
+    const verifiedUser = jwtHelpers.verifyToken(
+      token,
+      config.jwt.secret as Secret
+    );
+
+    const result = await OrderService.getSingleOrder(id, verifiedUser);
+
+    // Send Response
+    sendResponse<IOrder>(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "Order information retrieved successfully",
+      data: result,
+    });
+  }
+);
+
 export const OrderController = {
   createOrder,
   getAllOrders,
+  getSingleOrder,
 };
