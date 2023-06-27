@@ -106,8 +106,12 @@ const updateMyProfile: RequestHandler = catchAsync(
 
     const updateData = req.body;
 
-    const result = await UserService.updateMyProfile(verifiedUser, updateData);
-
+    const updatedData: any = await UserService.updateMyProfile(
+      verifiedUser,
+      updateData
+    );
+    updatedData.set("password", undefined, { strict: false });
+    const result = await updatedData;
     sendResponse<IUser>(res, {
       statusCode: httpStatus.OK,
       success: true,
