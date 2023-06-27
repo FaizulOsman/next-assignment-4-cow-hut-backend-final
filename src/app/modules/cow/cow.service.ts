@@ -90,11 +90,23 @@ const getSingleCow = async (id: string): Promise<ICow | null> => {
 
 const updateCow = async (
   id: string,
-  payload: Partial<ICow>
+  payload: Partial<ICow>,
+  verifiedSeller: any
 ): Promise<ICow | null> => {
   const isExist = await Cow.findOne({ _id: id });
   if (!isExist) {
     throw new ApiError(httpStatus.BAD_REQUEST, "Cow not found");
+  }
+
+  const cowSeller = await Cow.findOne({
+    $and: [{ _id: id }, { seller: verifiedSeller?._id }],
+  }).populate("seller");
+
+  if (!cowSeller) {
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      "You're not the seller of the cow!"
+    );
   }
 
   const { ...CowData } = payload;

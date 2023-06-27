@@ -7,6 +7,9 @@ import { ICow } from "./cow.interface";
 import pick from "../../../shared/pick";
 import { cowFilterableFields } from "./cow.constants";
 import { paginationFields } from "../../../constants/pagination";
+import { jwtHelpers } from "../../../helpers/jwtHelpers";
+import config from "../../../config";
+import { Secret } from "jsonwebtoken";
 
 // Create Cow
 const createCow: RequestHandler = catchAsync(
@@ -64,7 +67,13 @@ const updateCow: RequestHandler = catchAsync(async (req, res) => {
   const id = req.params.id;
   const updateData = req.body;
 
-  const result = await CowService.updateCow(id, updateData);
+  const token: any = req.headers.authorization;
+  const verifiedSeller = jwtHelpers.verifyToken(
+    token,
+    config.jwt.secret as Secret
+  );
+
+  const result = await CowService.updateCow(id, updateData, verifiedSeller);
 
   sendResponse<ICow>(res, {
     statusCode: httpStatus.OK,
