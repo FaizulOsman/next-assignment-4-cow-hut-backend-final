@@ -6,6 +6,7 @@ import httpStatus from "http-status";
 import { IPaginationOptions } from "../../../interfaces/pagination";
 import { paginationHelpers } from "../../../helpers/paginationHelper";
 import { userSearchableFields } from "./user.constants";
+import bcrypt from "bcrypt";
 
 // Get All Users (can also filter)
 const getAllUsers = async (
@@ -134,6 +135,14 @@ const updateMyProfile = async (
   }
 
   const { name, ...UserData } = payload;
+
+  // Hashing Password
+  if (UserData.password) {
+    UserData.password = await bcrypt.hash(
+      UserData.password,
+      Number(process.env.bcrypt_salt_rounds)
+    );
+  }
 
   const updateUserData: Partial<IUser> = { ...UserData };
 
