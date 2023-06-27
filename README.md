@@ -2,7 +2,7 @@
 
 ## Live Link:
 
-https://goru-kena-becha.vercel.app/
+https://online-cow-buy-sell.vercel.app/
 
 ## Application Routes:
 

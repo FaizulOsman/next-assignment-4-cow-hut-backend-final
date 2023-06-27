@@ -3,8 +3,6 @@ import app from "./app";
 import config from "./config";
 import { Server } from "http";
 
-const port: number = 5000;
-
 let server: Server;
 
 // Database Connection
