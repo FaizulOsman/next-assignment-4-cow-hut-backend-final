@@ -21,9 +21,9 @@ https://online-cow-buy-sell.vercel.app/
 > User
 
 - /api/v1/users (GET)
-- /api/v1/users/6177a5b87d32123f08d2f5d4 (Single GET)
-- /api/v1/users/6177a5b87d32123f08d2f5d4 (PATCH)
-- /api/v1/users/6177a5b87d32123f08d2f5d4 (DELETE)
+- /api/v1/users/649b2a2479bd77cd166783d1 (Single GET)
+- /api/v1/users/649b2a2479bd77cd166783d1 (PATCH)
+- /api/v1/users/649b2a2479bd77cd166783d1 (DELETE)
 - /api/v1/users/my-profile (GET)
 - /api/v1/users/my-profile (PATCH)
 
@@ -31,9 +31,9 @@ https://online-cow-buy-sell.vercel.app/
 
 - /api/v1/cows (POST)
 - /api/v1/cows (GET)
-- /api/v1/cows/6177a5b87d32123f08d2f5d4 (Single GET)
-- /api/v1/cows/6177a5b87d32123f08d2f5d4 (PATCH)
-- /api/v1/cows/6177a5b87d32123f08d2f5d4 (DELETE)
+- /api/v1/cows/649b26fe79bd77cd166783b3 (Single GET)
+- /api/v1/cows/649b26fe79bd77cd166783b3 (PATCH)
+- /api/v1/cows/649b26fe79bd77cd166783b3 (DELETE)
 
 > Pagination and Filtering routes of Cows
 
@@ -47,7 +47,7 @@ https://online-cow-buy-sell.vercel.app/
 
 - /api/v1/orders (POST)
 - /api/v1/orders (GET)
-- /api/v1/orders/6177a5b87d32123f08d2f5d4 (GET Single)
+- /api/v1/orders/649b2c6179bd77cd16678406 (GET Single)
 
 ### Request bodies:
 
@@ -56,7 +56,7 @@ Request body:
 
 ```json
 {
- "password":"amiadminbujheshunekothakoiyo",
+ "password":"123456",
  "role": "admin",
   "name":{
      "firstName": "Mr. Admin"
@@ -73,7 +73,7 @@ Request body:
 ```json
 {
   "phoneNumber": "01711111111",
-  "password": "amiadmin"
+  "password": "123456"
 }
 ```
 
@@ -83,7 +83,7 @@ Request body:
 ```json
 {
   "phoneNumber": "01711111111",
-  "password": "amiuserasbuyerasseller"
+  "password": "1234567"
 }
 ```
 
@@ -92,7 +92,7 @@ Request body:
 
 ```json
 {
- "password":"mydreamwife",
+ "password":"1234567",
   "name":{
      "firstName": "Mr. Update Password"
      "lastName": "Bhai"
@@ -107,7 +107,7 @@ Request body:
 
 ```json
 {
-  "cow": "648ddd670c9ed4b30e69f485",
-  "buyer": "648dda19ace455c2e52f69fb"
+  "cow": "649b225a8cef012312dd4558",
+  "buyer": "649b20bd8cef012312dd452c"
 }
 ```
