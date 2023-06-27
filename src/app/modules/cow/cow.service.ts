@@ -133,7 +133,7 @@ const deleteCow = async (
 
   // Verification for seller of the cow
   const cowSeller = await Cow.findOne({
-    seller: verifiedSeller?._id,
+    $and: [{ _id: id }, { seller: verifiedSeller?._id }],
   }).populate("seller");
 
   if (!cowSeller) {
