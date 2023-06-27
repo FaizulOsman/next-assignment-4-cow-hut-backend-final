@@ -66,7 +66,7 @@ const getSingleCow: RequestHandler = catchAsync(
 const updateCow: RequestHandler = catchAsync(async (req, res) => {
   const id = req.params.id;
   const updateData = req.body;
-
+  // Get the token
   const token: any = req.headers.authorization;
   const verifiedSeller = jwtHelpers.verifyToken(
     token,
@@ -86,8 +86,14 @@ const updateCow: RequestHandler = catchAsync(async (req, res) => {
 // Delete Cow
 const deleteCow: RequestHandler = catchAsync(async (req, res) => {
   const id = req.params.id;
+  // Get the token
+  const token: any = req.headers.authorization;
+  const verifiedSeller = jwtHelpers.verifyToken(
+    token,
+    config.jwt.secret as Secret
+  );
 
-  const result = await CowService.deleteCow(id);
+  const result = await CowService.deleteCow(id, verifiedSeller);
 
   sendResponse<ICow>(res, {
     statusCode: httpStatus.OK,

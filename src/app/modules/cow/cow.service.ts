@@ -98,6 +98,7 @@ const updateCow = async (
     throw new ApiError(httpStatus.BAD_REQUEST, "Cow not found");
   }
 
+  // Verification for seller of the cow
   const cowSeller = await Cow.findOne({
     $and: [{ _id: id }, { seller: verifiedSeller?._id }],
   }).populate("seller");
@@ -120,8 +121,30 @@ const updateCow = async (
 };
 
 // Delete Cow
-const deleteCow = async (id: string): Promise<ICow | null> => {
+const deleteCow = async (
+  id: string,
+  verifiedSeller: any
+): Promise<ICow | null> => {
+  const findCow = await Cow.findOne({ _id: id });
+
+  if (!findCow) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Cow Not Found!");
+  }
+
+  // Verification for seller of the cow
+  const cowSeller = await Cow.findOne({
+    seller: verifiedSeller?._id,
+  }).populate("seller");
+
+  if (!cowSeller) {
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      "You're not the seller of the cow!"
+    );
+  }
+
   const result = await Cow.findByIdAndDelete({ _id: id }).populate("seller");
+
   return result;
 };
 
