@@ -12,7 +12,10 @@ const createAuth: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
     const { ...userData } = req.body;
 
-    const result = await AuthService.createAuth(userData);
+    const postData: any = await AuthService.createAuth(userData);
+
+    postData.set("password", undefined, { strict: false });
+    const result = await postData;
 
     // Send Response
     sendResponse<IUser>(res, {
