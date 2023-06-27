@@ -81,6 +81,14 @@ const updateUser = async (
 
   const { name, ...UserData } = payload;
 
+  // Hashing Password
+  if (UserData.password) {
+    UserData.password = await bcrypt.hash(
+      UserData.password,
+      Number(process.env.bcrypt_salt_rounds)
+    );
+  }
+
   const updateUserData: Partial<IUser> = { ...UserData };
 
   // dynamically handling nested fields
