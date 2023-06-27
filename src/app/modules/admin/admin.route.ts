@@ -21,4 +21,7 @@ router.post(
   AdminController.refreshToken
 );
 
+router.get("/my-profile", AdminController.getMyProfile);
+router.patch("/my-profile", AdminController.updateMyProfile);
+
 export const AdminRoutes = router;

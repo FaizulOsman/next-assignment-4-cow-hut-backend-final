@@ -9,6 +9,8 @@ import {
   IRefreshTokenResponse,
 } from "./admin.interface";
 import config from "../../../config";
+import { jwtHelpers } from "../../../helpers/jwtHelpers";
+import { Secret } from "jsonwebtoken";
 
 // Create Admin
 const createAdmin: RequestHandler = catchAsync(
@@ -72,8 +74,56 @@ const refreshToken = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+// Get My Profile
+const getMyProfile: RequestHandler = catchAsync(
+  async (req: Request, res: Response) => {
+    const token: any = req.headers.authorization;
+    const verifiedUser = jwtHelpers.verifyToken(
+      token,
+      config.jwt.secret as Secret
+    );
+
+    const result = await AdminService.getMyProfile(verifiedUser);
+
+    // Send Response
+    sendResponse<IAdmin>(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "Admin's information retrieved successfully",
+      data: result,
+    });
+  }
+);
+
+// Update My Profile
+const updateMyProfile: RequestHandler = catchAsync(
+  async (req: Request, res: Response) => {
+    const token: any = req.headers.authorization;
+    const verifiedAdmin = jwtHelpers.verifyToken(
+      token,
+      config.jwt.secret as Secret
+    );
+
+    const updateData = req.body;
+
+    const result = await AdminService.updateMyProfile(
+      verifiedAdmin,
+      updateData
+    );
+
+    sendResponse<IAdmin>(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "User's information retrieved successfully",
+      data: result,
+    });
+  }
+);
+
 export const AdminController = {
   createAdmin,
   loginAdmin,
   refreshToken,
+  getMyProfile,
+  updateMyProfile,
 };

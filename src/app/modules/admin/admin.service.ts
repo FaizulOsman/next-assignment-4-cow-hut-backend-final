@@ -106,8 +106,63 @@ const refreshToken = async (token: string): Promise<IRefreshTokenResponse> => {
   };
 };
 
+// Get My Profile
+const getMyProfile = async (
+  verifiedAdmin: any
+): Promise<IAdmin[] | null | any> => {
+  let result = null;
+
+  if (verifiedAdmin) {
+    result = await Admin.find(
+      { _id: verifiedAdmin._id },
+      { name: 1, phoneNumber: 1, address: 1 }
+    );
+
+    if (!result.length) {
+      throw new ApiError(httpStatus.NOT_FOUND, "No data found!");
+    }
+  }
+
+  return result;
+};
+
+// Update My Profile
+const updateMyProfile = async (
+  verifiedAdmin: any,
+  payload: Partial<IAdmin>
+): Promise<IAdmin | null> => {
+  const isExist = await Admin.findOne({ _id: verifiedAdmin._id });
+
+  if (!isExist) {
+    throw new ApiError(httpStatus.BAD_REQUEST, "Admin not found");
+  }
+
+  const { name, ...AdminData } = payload;
+
+  const updateAdminData: Partial<IAdmin> = { ...AdminData };
+
+  // dynamically handling nested fields
+  if (name && Object.keys(name)?.length > 0) {
+    Object.keys(name).forEach((key) => {
+      const nameKey = `name.${key}` as keyof Partial<IAdmin>; // `name.firstName`
+      (updateAdminData as any)[nameKey] = name[key as keyof typeof name];
+    });
+  }
+
+  const result = await Admin.findOneAndUpdate(
+    { _id: verifiedAdmin._id },
+    updateAdminData,
+    {
+      new: true,
+    }
+  );
+  return result;
+};
+
 export const AdminService = {
   createAdmin,
   loginAdmin,
   refreshToken,
+  getMyProfile,
+  updateMyProfile,
 };
